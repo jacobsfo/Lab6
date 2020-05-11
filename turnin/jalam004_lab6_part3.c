@@ -16,6 +16,7 @@
 enum States{Start, init, inc, dec, wait, reset} state; 
 unsigned char cnt1 = 0; 
 unsigned char cnt2 = 0;   
+unsigned char tmpB; 
 void Tick(){    
     switch(state)
     {   
@@ -82,33 +83,35 @@ void Tick(){
         break;
 
         case init:
-        PORTB = 0x07;
+        tmpB = 0x07;
 	break;
 
         case dec:
-        if(PORTB <= 0x00){PORTB = 0x00;}
-        else{PORTB = PORTB - 1;}
+        if(tmpB <= 0x00){tmpB = 0x00;}
+        else{tmpB = tmpB - 1;}
 	
         break;
         case wait:
 	if(cnt1 == 10 )
-       	PORTB = PORTB + 1;
+       	tmpB = tmpB + 1;
 	if(cnt2 == 10)
-	PORTB = PORTB - 1;
+	tmpB = tmpB - 1;
 //	else{return 1;}
 	break;
 
         case inc:
         if(PORTB >= 0x09){PORTB = 0x09;}
        //	else if((cnt % 10 == 0) && (PORTB < 0x09)){PORTB = PORTB + 1;}	
-	 else{PORTB = PORTB + 1;}
+	 else{tmpB = tmpB + 1;}
         break;
 
         case reset:
-        PORTB = 0x00;
+        tmpB = 0x00;
         break;
-        
+        default: break;
+//	PORTB = tmpB;
     }
+//	PORTB = tmpB;
 
 }
 
@@ -123,11 +126,14 @@ TimerSet(100);
 TimerOn();
  //state = Start;
 	while(1){
-	Tick();
+//	tmpB = PORTB;
+//	Tick();
 	
 	while(!TimerFlag) {}
 	TimerFlag = 0;
-
+//	tmpB = PORTB;
+	Tick();
+	PORTB = tmpB;
 	}
 return 1;
 }	
