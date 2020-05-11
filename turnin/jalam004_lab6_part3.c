@@ -60,10 +60,11 @@ void Tick(){
         { state = init;}
 
         
-        if( ((~PINA & 0x01) == 0x01)|| ((~PINA & 0x02) == 0x02) )
-	{cnt1++;
-	cnt2++;}
-        state = wait;
+        if((~PINA & 0x01) == 0x01)
+	{cnt1++;}
+	if((~PINA & 0x02) == 0x02) 
+	{cnt2++;}
+        else{state = wait;}
          break;
         
         case reset:
@@ -94,6 +95,7 @@ void Tick(){
        	PORTB = PORTB + 1;
 	if(cnt2 == 10)
 	PORTB = PORTB - 1;
+//	else{return 1;}
 	break;
 
         case inc:
